@@ -8,14 +8,14 @@ Test::MinimumVersion - does your code require newer perl than you think?
 
 =head1 VERSION
 
-version 0.003
+version 0.004
 
- $Id: /my/cs/projects/Test-MinimumVersion/trunk/lib/Test/MinimumVersion.pm 31298 2007-04-04T03:01:22.276227Z rjbs  $
+ $Id: /my/cs/projects/Test-MinimumVersion/trunk/lib/Test/MinimumVersion.pm 31304 2007-04-04T13:19:17.706719Z rjbs  $
 
 =cut
 
 use vars qw($VERSION);
-$VERSION = '0.003';
+$VERSION = '0.004';
 
 =head1 SYNOPSIS
 
