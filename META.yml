@@ -16,4 +16,4 @@ requires:
   Perl::MinimumVersion: 0.14
   Test::Builder: 0
   version: 0.7
-version: 0.001
+version: 0.003
