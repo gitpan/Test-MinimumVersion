@@ -18,4 +18,4 @@ requires:
   Test::Builder: 0
   perl: 5.005
   version: 0.7
-version: 0.006
+version: 0.007
