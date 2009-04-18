@@ -8,12 +8,12 @@ Test::MinimumVersion - does your code require newer perl than you think?
 
 =head1 VERSION
 
-version 0.008
+version 0.009
 
 =cut
 
 use vars qw($VERSION);
-$VERSION = '0.008';
+$VERSION = '0.009';
 
 =head1 SYNOPSIS
 
@@ -27,7 +27,7 @@ Example F<minimum-perl.t>:
 
 use File::Find::Rule;
 use File::Find::Rule::Perl;
-use Perl::MinimumVersion;
+use Perl::MinimumVersion 1.20;
 use version;
 
 use Test::Builder;
@@ -84,6 +84,8 @@ sub minimum_version_ok {
   $minimum = $explicit_minimum
     if $explicit_minimum and $explicit_minimum > $minimum;
 
+  my %min = $pmv->version_markers;
+
   if (not defined $minimum) {
     $Test->ok(1, $file);
   } elsif ($minimum <= $version) {
@@ -94,6 +96,11 @@ sub minimum_version_ok {
       "$file requires $minimum "
       . ($is_syntax ? 'due to syntax' : 'due to explicit requirement')
     );
+
+    if ($is_syntax and my $markers = $min{ $minimum }) {
+      $Test->diag("version markers for $minimum:");
+      $Test->diag("- $_ ") for @$markers;
+    }
   }
 }
 
@@ -187,7 +194,7 @@ package Test::MinimumVersion::YAMLTiny;
 use strict;
 BEGIN {
  require 5.004;
- $YAML::Tiny::VERSION = '1.32';
+ # VERSION 1.32;
  $YAML::Tiny::errstr = '';
 }
 my $ESCAPE_CHAR = '[\\x00-\\x08\\x0b-\\x0d\\x0e-\\x1f\"\n]';
