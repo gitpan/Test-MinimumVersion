@@ -1,0 +1,39 @@
+{
+   "no_index" : {
+      "directory" : [
+         "inc",
+         "t",
+         "xt"
+      ]
+   },
+   "resources" : {
+      "license" : "http://dev.perl.org/licenses/"
+   },
+   "meta-spec" : {
+      "version" : 1.4,
+      "url" : "http://module-build.sourceforge.net/META-spec-v1.4.html"
+   },
+   "generated_by" : "Module::Install version 0.88 using Module::Install::JSONMETA version 5.000",
+   "distribution_type" : "module",
+   "version" : "0.010",
+   "name" : "Test-MinimumVersion",
+   "author" : [
+      "Ricardo SIGNES, C<< <rjbs at cpan.org> >>"
+   ],
+   "license" : "perl",
+   "build_requires" : {
+      "ExtUtils::MakeMaker" : 6.42
+   },
+   "module_name" : "Test::MinimumVersion",
+   "requires" : {
+      "perl" : "5.005",
+      "Test::Builder" : 0,
+      "version" : 0.7,
+      "File::Find::Rule::Perl" : 0,
+      "Perl::MinimumVersion" : 1.2
+   },
+   "abstract" : "does your code require newer perl than you think?",
+   "configure_requires" : {
+      "ExtUtils::MakeMaker" : 6.42
+   }
+}

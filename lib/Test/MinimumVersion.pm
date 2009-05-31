@@ -8,12 +8,12 @@ Test::MinimumVersion - does your code require newer perl than you think?
 
 =head1 VERSION
 
-version 0.009
+version 0.010
 
 =cut
 
 use vars qw($VERSION);
-$VERSION = '0.009';
+$VERSION = '0.010';
 
 =head1 SYNOPSIS
 
@@ -132,7 +132,7 @@ sub all_minimum_version_ok {
 
   my @perl_files;
   for my $path (@{ $arg->{paths} }) {
-    if (-f $path) {
+    if (-f $path and -s $path) {
       push @perl_files, $path;
     } elsif (-d $path) {
       push @perl_files, File::Find::Rule->perl_file->in($path);
