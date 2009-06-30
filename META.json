@@ -15,7 +15,7 @@
    },
    "generated_by" : "Module::Install version 0.88 using Module::Install::JSONMETA version 5.000",
    "distribution_type" : "module",
-   "version" : "0.010",
+   "version" : "0.011",
    "name" : "Test-MinimumVersion",
    "author" : [
       "Ricardo SIGNES, C<< <rjbs at cpan.org> >>"
