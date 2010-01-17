@@ -24,8 +24,9 @@ requires:
   Perl::MinimumVersion: 1.2
   Test::Builder: 0
   Test::Tester: 0
+  YAML::Tiny: 1.4
   perl: 5.6.0
   version: 0.7
 resources:
   license: http://dev.perl.org/licenses/
-version: 0.012
+version: 0.013
