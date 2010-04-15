@@ -1,3 +1,13 @@
 
-This is a test module to make it easier to notice that you've accidentally made
-your dist require a newer version of perl than you meant to.
+
+This archive contains the distribution Test-MinimumVersion,
+version 0.101050:
+
+  does your code require newer perl than you think?
+
+This software is copyright (c) 2007 by Ricardo Signes.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+
