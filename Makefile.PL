@@ -24,7 +24,7 @@ my %WriteMakefileArgs = (
                                            },
                        'ABSTRACT' => 'does your code require newer perl than you think?',
                        'EXE_FILES' => [],
-                       'VERSION' => '0.101050',
+                       'VERSION' => '0.101080',
                        'PREREQ_PM' => {
                                         'File::Find::Rule' => '0',
                                         'YAML::Tiny' => '1.40',
