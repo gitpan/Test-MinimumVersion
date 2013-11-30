@@ -7,6 +7,11 @@ Makefile.PL
 README
 dist.ini
 lib/Test/MinimumVersion.pm
+t/000-report-versions-tiny.t
 t/basic.t
-t/eg/5.6-warnings.pl
-t/release-pod-syntax.t
+t/eg/META.json
+t/eg/META.yml
+t/eg/bin/5.6-warnings.pl
+t/eg/bin/explicit-5.8.pl
+xt/release/changes_has_content.t
+xt/release/pod-syntax.t

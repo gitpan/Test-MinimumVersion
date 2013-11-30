@@ -2,17 +2,17 @@ use 5.006;
 use strict;
 use warnings;
 package Test::MinimumVersion;
-BEGIN {
-  $Test::MinimumVersion::VERSION = '0.101080';
+{
+  $Test::MinimumVersion::VERSION = '0.101081';
 }
 use base 'Exporter';
 # ABSTRACT: does your code require newer perl than you think?
 
 
+use CPAN::Meta;
 use File::Find::Rule;
 use File::Find::Rule::Perl;
-use Perl::MinimumVersion 1.20; # accuracy
-use YAML::Tiny 1.40; # bug fixes
+use Perl::MinimumVersion 1.32; # numerous bugfies
 use version 0.70;
 
 use Test::Builder;
@@ -20,6 +20,7 @@ use Test::Builder;
   minimum_version_ok
   all_minimum_version_ok
   all_minimum_version_from_metayml_ok
+  all_minimum_version_from_metajson_ok
 );
 
 sub import {
@@ -50,6 +51,14 @@ sub minimum_version_ok {
   $version = _objectify_version($version);
 
   my $pmv = Perl::MinimumVersion->new($file);
+
+  unless (defined $pmv) {
+    $Test->ok(0, $file);
+    $Test->diag(
+      "$file could not be parsed: " . PPI::Document->errstr
+    );
+    return;
+  }
 
   my $explicit_minimum = $pmv->minimum_explicit_version || 0;
   my $minimum = $pmv->minimum_syntax_version($explicit_minimum) || 0;
@@ -82,7 +91,13 @@ sub minimum_version_ok {
 sub all_minimum_version_ok {
   my ($version, $arg) = @_;
   $arg ||= {};
-  $arg->{paths} ||= [ qw(lib t xt/smoke), glob ("*.pm"), glob ("*.PL") ];
+  $arg->{paths} ||= [
+    qw(bin script lib t xt/smoke),
+    glob("*.pm"),
+    glob("*.PL"),
+  ];
+
+  $arg->{skip} ||= [];
 
   my $Test = Test::Builder->new;
 
@@ -97,6 +112,9 @@ sub all_minimum_version_ok {
     }
   }
 
+  my %skip = map {; $_ => 1 } @{ $arg->{skip} };
+  @perl_files = grep {; ! $skip{$_} } @perl_files;
+
   unless ($Test->has_plan or $arg->{no_plan}) {
     $Test->plan(tests => scalar @perl_files);
   }
@@ -105,27 +123,42 @@ sub all_minimum_version_ok {
 }
 
 
-sub all_minimum_version_from_metayml_ok {
-  my ($arg) = @_;
+sub __version_from_meta {
+  my ($fn) = @_;
+
+  my $meta = CPAN::Meta->load_file($fn, { lazy_validation => 1 })->as_struct;
+  my $version = $meta->{prereqs}{runtime}{requires}{perl};
+}
+
+sub __from_meta {
+  my ($fn, $arg) = @_;
   $arg ||= {};
 
   my $Test = Test::Builder->new;
 
-  $Test->plan(skip_all => "META.yml could not be found")
-    unless -f 'META.yml' and -r _;
-
-  my $documents = YAML::Tiny->read('META.yml');
+  $Test->plan(skip_all => "$fn could not be found")
+    unless -f $fn and -r _;
 
   $Test->plan(skip_all => "no minimum perl version could be determined")
-    unless my $version = $documents->[0]->{requires}{perl};
+    unless my $version = __version_from_meta($fn);
 
   all_minimum_version_ok($version, $arg);
 }
 
+sub all_minimum_version_from_metayml_ok {
+  __from_meta('META.yml', @_);
+}
+
+
+sub all_minimum_version_from_metajson_ok { __from_meta('META.json', @_); }
+
 1;
 
 __END__
+
 =pod
+
+=encoding UTF-8
 
 =head1 NAME
 
@@ -133,7 +166,7 @@ Test::MinimumVersion - does your code require newer perl than you think?
 
 =head1 VERSION
 
-version 0.101080
+version 0.101081
 
 =head1 SYNOPSIS
 
@@ -165,10 +198,13 @@ Relevant files are found by L<File::Find::Rule::Perl>.
 
 C<\%arg> is optional.  Valid arguments are:
 
-  paths   - in what paths to look for files; defaults to (t, lib, xt/smoke,
-            and any .pm or .PL files in the current working directory)
-            if it contains files, they will be checked
+  paths   - in what paths to look for files; defaults to (bin, script, t, lib,
+            xt/smoke, and any .pm or .PL files in the current working
+            directory) if it contains files, they will be checked
   no_plan - do not plan the tests about to be run
+  skip    - files to skip; this can be useful in weird cases like gigantic
+            files, files falsely detected as Perl, or code that uses
+            a source filter; this should be an arrayref of filenames
 
 =head2 all_minimum_version_from_metayml_ok
 
@@ -179,9 +215,18 @@ META.yml file or no perl version is found, all tests are skipped.  If a version
 is found, the test proceeds as if C<all_minimum_version_ok> had been called
 with that version.
 
+=head2 all_minimum_version_from_metajson_ok
+
+  all_minimum_version_from_metajson_ok(\%arg);
+
+This routine checks F<META.json> for an entry in F<requires> for F<perl>.  If
+no META.json file or no perl version is found, all tests are skipped.  If a
+version is found, the test proceeds as if C<all_minimum_version_ok> had been
+called with that version.
+
 =head1 AUTHOR
 
-  Ricardo Signes
+Ricardo Signes
 
 =head1 COPYRIGHT AND LICENSE
 
@@ -191,4 +236,3 @@ This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
 =cut
-
